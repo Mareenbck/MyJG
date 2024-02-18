@@ -22,6 +22,12 @@ const CharactersList = () => {
 		try {
 			const allCharactersData: Character[] = [];
 			const speciesSet = new Set<string>();
+			const cachedData = localStorage.getItem('characters_cache');
+			const species = localStorage.getItem('species');
+			if (cachedData && species) {
+				setAllCharacters(JSON.parse(cachedData));
+				setSpeciesOptions((JSON.parse(species)))
+			} else {
 			for (let i = 1; i <= 42; i++) {
 				const response = await fetch(`https://rickandmortyapi.com/api/character?page=${i}`);
 				const data = await response.json();
@@ -29,7 +35,10 @@ const CharactersList = () => {
 				data.results.forEach((character: Character) => speciesSet.add(character.species));
 			}
 			setAllCharacters(allCharactersData);
+			localStorage.setItem('characters_cache', JSON.stringify(allCharactersData));
 			setSpeciesOptions(Array.from(speciesSet).map(species => ({ label: species, value: species })));
+			localStorage.setItem('species', JSON.stringify(Array.from(speciesSet).map(species => ({ label: species, value: species }))));
+		}
 			setIsLoading(false);
 		} catch (error) {
 			console.error("Error fetching all characters:", error);
