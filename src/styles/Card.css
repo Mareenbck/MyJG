@@ -36,6 +36,9 @@
 			font-size: 16px;
 			margin-bottom: 10px;
 		}
+		span {
+			font-weight: 600;
+		}
 	}
 	.tags-container {
 		display: flex;
@@ -45,13 +48,21 @@
 		flex-direction: row-reverse;
 	}
 	.tag {
-		background-color: #fff;
-		border: 1px solid #000;
-		border-radius: 5px;
+		border-radius: 14px;
+		box-shadow: 2px 2px 5px #808080a1;
 		padding: 5px 10px;
 		font-size: 12px;
 		font-weight: bold;
-		color: #000;
+		color: rgb(255, 255, 255);
 		text-transform: uppercase;
 	}
+	.species {
+		background-color: #FF70D7;
+	}
+	.location {
+		background-color: #FF9154;
+	}
+}
+.card:hover {
+	box-shadow: 2px 2px 4px #808080b5
 }
