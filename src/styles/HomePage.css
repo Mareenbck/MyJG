@@ -1,0 +1,70 @@
+.home-page {
+	background-color: #B3C9D7;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100vh;
+	h1 {
+		margin-top: 20px;
+		font-family: 'Syne';
+		font-size: 60px;
+	}
+	.main-container {
+		display: flex;
+		align-items: center;
+		height: 100%;
+	}
+	.icon {
+		position: absolute;
+		width: 195px;
+		height: 209px;
+		background: no-repeat;
+	}
+
+	.middle-right {
+		background-image: url('../public/icon1.svg');
+		top: 350px;
+		right: 10px;
+	}
+
+	.top-right {
+		background-image: url('../public/icon2.svg');
+		top: 70px;
+		right: 140px;
+	}
+
+	.bottom-center {
+		background-image: url('../public/icon3.svg');
+		bottom: 0px;
+		right: 250px;
+	}
+
+	.bottom-right {
+		background-image: url('../public/icon4.svg');
+		bottom: 0px;
+		left: 25px;
+	}
+
+	.middle-left {
+		background-image: url('../public/icon5.svg');
+		bottom: 260px;
+		left: 200px;
+	}
+
+	.top-left {
+		background-image: url('../public/icon6.svg');
+		top: 50px;
+		left: 50px;
+	}
+
+	.footer-right {
+		background-image: url('../public/icon7.svg');
+		bottom: 0px;
+		right: 0px;
+	}
+	.center {
+		background-image: url('../public/icon8.svg');
+		bottom: 250px;
+		left: -25px;
+	}
+}
