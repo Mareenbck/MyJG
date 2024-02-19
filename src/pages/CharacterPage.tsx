@@ -42,21 +42,17 @@ const CharacterPage = () => {
 		}
 	};
 
-	const getStatusIcon = () => {
-		if (character?.status === 'Alive') {
-			return <span className="status-icon alive">🟢</span>;
-		} else {
-			return <span className="status-icon dead"></span>;
-		}
-	};
-
 	return (
 		<Background title={character?.name}>
 			{character ? (
 				<div className='identity-container'>
 					<div className="left-column">
 						<h2>{character.name}</h2>
-						<p>Status: {character.status} {getStatusIcon()}</p>
+						<p>Status: {character.status}
+							<span className={`status-icon ${character.status === 'Alive' ? 'alive' : 'dead'}`}>
+								{character.status === 'Alive' ? '🟢' : ''}
+							</span>
+						</p>
 						<p>Species: {character.species}</p>
 						<p>Gender: {character.gender}</p>
 						<p>Actual Location: {character.location.name} - Type : {actualLocation?.type}</p>

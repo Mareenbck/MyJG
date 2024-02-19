@@ -1,15 +1,15 @@
-import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
-import CharactersList from '../pages/CharactersList';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { BrowserRouter } from 'react-router-dom';
+import { Character, Species } from '../interface';
+import CharactersList from '../pages/CharactersList'; // Assuming correct import path
 
-// Données JSON à utiliser pour les tests
-const characters = [
+const mockCharactersData: Character[] = [
 	{
 		"id": 1,
 		"name": "Rick Sanchez",
 		"status": "Alive",
 		"species": "Human",
-		"type": "",
 		"gender": "Male",
 		"origin": {
 			"name": "Earth (C-137)",
@@ -25,14 +25,12 @@ const characters = [
 			"https://rickandmortyapi.com/api/episode/2",
 			// ...
 		],
-		"url": "https://rickandmortyapi.com/api/character/1"
 	},
 	{
 		"id": 2,
 		"name": "Morty Smith",
 		"status": "Alive",
 		"species": "Human",
-		"type": "",
 		"gender": "Male",
 		"origin": {
 			"name": "Earth (C-137)",
@@ -48,14 +46,92 @@ const characters = [
 			"https://rickandmortyapi.com/api/episode/2",
 			// ...
 		],
-		"url": "https://rickandmortyapi.com/api/character/2"
 	},
+	{
+		"id": 435,
+		"name": "Pripudlian",
+		"status": "Alive",
+		"species": "Alien",
+		"gender": "Male",
+		"origin": {
+			"name": "Earth (C-137)",
+			"url": "https://rickandmortyapi.com/api/location/1"
+		},
+		"location": {
+			"name": "Earth (Replacement Dimension)",
+			"url": "https://rickandmortyapi.com/api/location/2"
+		},
+		"image":"https://rickandmortyapi.com/api/character/avatar/435.jpeg",
+		"episode": [
+			"https://rickandmortyapi.com/api/episode/1",
+			"https://rickandmortyapi.com/api/episode/2",
+			// ...
+		],
+	}
 ];
 
-describe('CharacterList', () => {
-	it('displays the list of characters by default', async () => {
-		render(<CharactersList />);
-		expect(await screen.findByText('Rick Sanchez')).toBeInTheDocument();
+const speciesOptionsData: Species[] = [
+	{
+		label: 'Human',
+		value: 'Human'
+	},
+	{
+		label: 'Alien',
+		value: 'Alien'
+	},
+
+]
+
+describe('CharactersList component', () => {
+	it('renders loading state initially', async () => {
+		render(
+			<BrowserRouter>
+				<CharactersList characters={[]} speciesType = {[]} />;
+			</BrowserRouter>
+		)
+		expect(screen.getByText('Loading...')).toBeInTheDocument();
 	});
 
+	it('renders the correct number of characters', async () => {
+		render(
+			<BrowserRouter>
+				<CharactersList characters={mockCharactersData} speciesType={speciesOptionsData} />
+			</BrowserRouter>
+		)
+
+		await waitFor(() => expect(screen.queryByText('Loading...')).not.toBeInTheDocument());
+		const characterCards = screen.getAllByTestId(/^character-card-\d+$/);
+		expect(characterCards).toHaveLength(mockCharactersData.length);
+	});
+
+	it('renders characters filtered by species', async () => {
+		render(
+			<BrowserRouter>
+				<CharactersList characters={mockCharactersData} speciesType={speciesOptionsData} />
+			</BrowserRouter>
+		);
+
+		await waitFor(() => expect(screen.queryByText('Loading...')).not.toBeInTheDocument());
+		const input = screen.getByTestId('Species');
+
+		act(() => {
+			userEvent.type(input, 'Alien');
+		});
+
+		await waitFor(() => {
+			expect(screen.getByRole('option', { name: 'Alien' })).toBeInTheDocument();
+		});
+
+		act(() => {
+			const optionToSelect = screen.getByRole('option', { name: 'Alien' });
+			userEvent.click(optionToSelect);
+		});
+
+		await waitFor(() => {
+			const characterCards = screen.getAllByTestId(/^character-card-\d+$/);
+			const alienCharacters = mockCharactersData.filter(character => character.species === 'Alien');
+			expect(characterCards).toHaveLength(alienCharacters.length);
+		});
+	});
 });
+
