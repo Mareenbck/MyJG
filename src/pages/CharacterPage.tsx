@@ -50,7 +50,7 @@ const CharacterPage = () => {
 						<h2>{character.name}</h2>
 						<p>Status: {character.status}
 							<span className={`status-icon ${character.status === 'Alive' ? 'alive' : 'dead'}`}>
-								{character.status === 'Alive' ? '🟢' : ''}
+								{character.status === 'Alive' ? '🟢' : '☠️'}
 							</span>
 						</p>
 						<p>Species: {character.species}</p>

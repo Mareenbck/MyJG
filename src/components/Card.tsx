@@ -40,7 +40,7 @@ const Card: React.FC<CardProps> = ({ character }) => {
 				<p>
 					{character.species} - {character.status}
 					<span className={`status-icon ${character.status === 'Alive' ? 'alive' : 'dead'}`}>
-						{character.status === 'Alive' ? '🟢' : ''}
+						{character.status === 'Alive' ? '🟢' : '☠️'}
 					</span>
 				</p>
 				<p>{character.gender}</p>

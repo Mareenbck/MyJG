@@ -3,3 +3,8 @@
 		max-height: calc(95vh - 208px);
 		margin-bottom: 20px;
 	}
+	.filterbar {
+		display: flex;
+		width: 100%;
+    	justify-content: space-evenly;
+	}

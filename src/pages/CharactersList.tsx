@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Pagination from '@mui/material/Pagination';
 import Card from '../components/Card';
 import { Character, Species } from '../interface';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 interface CharactersListProps {
@@ -17,35 +17,40 @@ const CharactersList: React.FC<CharactersListProps> = ({ characters, speciesType
 	const [page, setPage] = useState<number>(1);
 	const [numberOfPage, setNumberOfPage] = useState<number>(1);
 	const [speciesFilter, setSpeciesFilter] = useState<string>("");
+	const [statusFilter, setStatusFilter] = useState<string>("");
 
 	const itemsPerPage = 20;
 
-	const filterCharacters = (species: string) => {
-		if (species === "") {
-			setFilteredCharacters(characters);
-		} else {
-			const filtered = characters.filter((character) =>
+	const filterCharacters = (species: string, status: string) => {
+		let filtered: Character[] = characters;
+		if (speciesFilter) {
+			filtered = filtered.filter((character) =>
 				character.species.toLowerCase().includes(species.toLowerCase())
 			);
-			setFilteredCharacters(filtered);
 		}
+		if (statusFilter) {
+			filtered = filtered.filter((character) =>
+				character.status.toLowerCase() === status.toLowerCase()
+			);
+		}
+		setFilteredCharacters(filtered);
 	};
 
 	useEffect(() => {
-		filterCharacters(speciesFilter);
-	}, [speciesFilter]);
+		filterCharacters(speciesFilter, statusFilter);
+	}, [speciesFilter, statusFilter]);
 
 	useEffect(() => {
 		const startIndex = (page - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
-		if (speciesFilter) {
+		if (speciesFilter || statusFilter) {
 			setNumberOfPage(Math.ceil(filteredCharacters.length / itemsPerPage))
 			setCharactersToShow(filteredCharacters.slice(startIndex, endIndex));
 		} else {
 			setNumberOfPage(Math.ceil(characters.length / itemsPerPage))
 			setCharactersToShow(characters.slice(startIndex, endIndex));
 		}
-	}, [page, speciesFilter, filteredCharacters, characters]);
+	}, [page, speciesFilter, filteredCharacters, characters, statusFilter]);
 
 	const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
 		setPage(value);
@@ -56,16 +61,33 @@ const CharactersList: React.FC<CharactersListProps> = ({ characters, speciesType
 		setSpeciesFilter(species);
 	};
 
+	const handleStatusFilterChange = (event: React.MouseEvent<HTMLElement>, value: string) => {
+		const status = value ? value : "";
+		setStatusFilter(status);
+	};
+
 	return (
 		<>
-			<Autocomplete
-				disablePortal
-				options={speciesType}
-				data-testid={'Species'}
-				onChange={(event, value) => handleSpeciesFilterChange(value)}
-				sx={{ width: 300 }}
-				renderInput={(params) => <TextField {...params} label="Species" />}
-			/>
+			<div className='filterbar'>
+				<Autocomplete
+					disablePortal
+					options={speciesType}
+					data-testid={'Species'}
+					onChange={(event, value) => handleSpeciesFilterChange(value)}
+					sx={{ width: 300 }}
+					renderInput={(params) => <TextField {...params} label="Species" />}
+					/>
+				<ToggleButtonGroup
+					color="primary"
+					value={statusFilter}
+					exclusive
+					onChange={handleStatusFilterChange}
+					aria-label="Platform"
+					>
+					<ToggleButton value="alive">Alive</ToggleButton>
+					<ToggleButton value="dead">Dead</ToggleButton>
+				</ToggleButtonGroup>
+			</div>
 			<div className='characters-list'>
 				{!charactersToShow.length ? (
 					<p>Loading...</p>

@@ -133,5 +133,37 @@ describe('CharactersList component', () => {
 			expect(characterCards).toHaveLength(alienCharacters.length);
 		});
 	});
+  it('renders characters filtered by status', async () => {
+    render(
+        <BrowserRouter>
+            <CharactersList characters={mockCharactersData} speciesType={speciesOptionsData} />
+        </BrowserRouter>
+    );
+
+    await waitFor(() => expect(screen.queryByText('Loading...')).not.toBeInTheDocument());
+    
+    const input = screen.getByTestId('Species');
+    act(() => {
+        userEvent.type(input, 'Alien');
+    });
+    await waitFor(() => {
+        expect(screen.getByRole('option', { name: 'Alien' })).toBeInTheDocument();
+    });
+    act(() => {
+        const optionToSelect = screen.getByRole('option', { name: 'Alien' });
+        userEvent.click(optionToSelect);
+    });
+
+    const aliveToggleButton = screen.getByRole('button', { name: 'Alive' });
+    act(() => {
+        userEvent.click(aliveToggleButton);
+    });
+
+    await waitFor(() => {
+        const characterCards = screen.getAllByTestId(/^character-card-\d+$/);
+        const aliveAlienCharacters = mockCharactersData.filter(character => character.species === 'Alien' && character.status === 'Alive');
+        expect(characterCards).toHaveLength(aliveAlienCharacters.length);
+    });
+});
 });
 
