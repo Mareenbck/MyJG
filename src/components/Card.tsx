@@ -48,7 +48,7 @@ const Card: React.FC<CardProps> = ({ character }) => {
 			</div>
 			<div className="tags-container">
 				{character.species && <span className="tag species">{character.species}</span>}
-				{character.origin?.name && <span className="tag location">{character.origin.name}</span>}
+				{character.origin.name && <span className="tag location">{character.origin.name}</span>}
 			</div>
 		</div>
 	);
